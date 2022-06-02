@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -20,22 +22,39 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: number) {
+  async getOne(@Param('id') id: number) {
+    if (!await this.categoriesService.exists(id)){
+        throw new NotFoundException();
+    }
     return this.categoriesService.findOne(id);
   }
 
   @Post()
-  create(@Body() createDTO: CategoryDTO) {
+  async create(@Body() createDTO: CategoryDTO) {
+    const error = await this.categoriesService.isValid(createDTO);
+    if (error) {
+      throw new BadRequestException(error);
+    }
     return this.categoriesService.create(createDTO);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateDTO: CategoryDTO) {
+  async update(@Param('id') id: number, @Body() updateDTO: CategoryDTO) {
+    if (!await this.categoriesService.exists(id)){
+        throw new NotFoundException();
+    }
+    const error = await this.categoriesService.isValid(updateDTO);
+    if (error) {
+      throw new BadRequestException(error);
+    }
     return this.categoriesService.update(id, updateDTO);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  async delete(@Param('id') id: number) {
+    if (!await this.categoriesService.exists(id)){
+        throw new NotFoundException();
+    }
     return this.categoriesService.delete(id);
   }
 }
