@@ -23,8 +23,8 @@ export class CategoriesController {
 
   @Get(':id')
   async getOne(@Param('id') id: number) {
-    if (!await this.categoriesService.exists(id)){
-        throw new NotFoundException();
+    if (!(await this.categoriesService.exists(id))) {
+      throw new NotFoundException();
     }
     return this.categoriesService.findOne(id);
   }
@@ -40,8 +40,8 @@ export class CategoriesController {
 
   @Put(':id')
   async update(@Param('id') id: number, @Body() updateDTO: CategoryDTO) {
-    if (!await this.categoriesService.exists(id)){
-        throw new NotFoundException();
+    if (!(await this.categoriesService.exists(id))) {
+      throw new NotFoundException();
     }
     const error = await this.categoriesService.isValid(updateDTO);
     if (error) {
@@ -52,8 +52,8 @@ export class CategoriesController {
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    if (!await this.categoriesService.exists(id)){
-        throw new NotFoundException();
+    if (!(await this.categoriesService.exists(id))) {
+      throw new NotFoundException();
     }
     return this.categoriesService.delete(id);
   }

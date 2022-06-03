@@ -6,7 +6,7 @@ export class Category extends Base {
   @Column({ default: '' })
   name!: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'parent_category_id', nullable: true })
   parentCategoryId?: number;
 
   @ManyToOne(() => Category)

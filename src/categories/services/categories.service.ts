@@ -29,22 +29,21 @@ export class CategoriesService {
     return this.categoriesRepo.save(category);
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: number): Promise<void> {
     await this.categoriesRepo.delete(id);
-    return true;
   }
 
   async exists(id: number): Promise<boolean> {
-    return await this.categoriesRepo.count({ id: id }) > 0;
+    return (await this.categoriesRepo.count({ id: id })) > 0;
   }
 
   async isValid(dto: CategoryDTO): Promise<string> {
-    if (!await this.exists(dto.parentCategoryId)) {
-      return 'Parent category does not exist'
+    if (dto.parentCategoryId && !(await this.exists(dto.parentCategoryId))) {
+      return 'Parent category does not exist';
     }
     const parent = await this.findOne(dto.parentCategoryId);
-    if (parent.parentCategoryId != undefined) {
-      return 'Parent category can\'t be a subcategory';
+    if (parent && parent.parentCategoryId != undefined) {
+      return "Parent category can't be a subcategory";
     }
     return '';
   }
