@@ -1,4 +1,9 @@
+import { IsNumber, IsString } from 'class-validator';
+
 export class CategoryDTO {
+  @IsString()
   name: string;
-  parentCategoryId: number;
+
+  @IsNumber()
+  parentCategoryId?: number;
 }
