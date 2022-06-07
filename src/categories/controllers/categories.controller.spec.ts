@@ -19,6 +19,17 @@ describe('CategoriesControllrer', () => {
     }),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
     delete: jest.fn((_id) => {}),
+    findAll: jest.fn(() => {
+      return [
+        {
+          id: 1,
+          name: 'test',
+          parentCategoryId: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+    }),
   };
 
   beforeEach(async () => {
@@ -63,5 +74,17 @@ describe('CategoriesControllrer', () => {
     await controller.delete(id);
     expect(mockService.delete).toHaveBeenCalledTimes(1);
     expect(mockService.delete).toHaveBeenCalledWith(id);
+  });
+
+  it('should get all categories', async () => {
+    expect(await controller.getall()).toEqual([
+      {
+        id: 1,
+        name: 'test',
+        parentCategoryId: null,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      },
+    ]);
   });
 });
