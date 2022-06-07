@@ -30,6 +30,16 @@ describe('CategoriesControllrer', () => {
         },
       ];
     }),
+    findOne: jest.fn((id) => {
+      if (id === 1)
+        return {
+          id: 1,
+          name: 'test',
+          parentCategoryId: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+    }),
   };
 
   beforeEach(async () => {
@@ -86,5 +96,16 @@ describe('CategoriesControllrer', () => {
         updatedAt: expect.any(Date),
       },
     ]);
+  });
+
+  it('should get one category', async () => {
+    const id = 1;
+    expect(await controller.getOne(id)).toEqual({
+      id: 1,
+      name: 'test',
+      parentCategoryId: null,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
   });
 });
