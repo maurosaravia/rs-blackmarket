@@ -8,8 +8,14 @@ describe('CategoriesControllrer', () => {
     create: jest.fn((dto) => {
       return { id: 2, ...dto, createdAt: new Date(), updatedAt: new Date() };
     }),
+    update: jest.fn((id, dto) => {
+      return { id, ...dto, createdAt: new Date(), updatedAt: new Date() };
+    }),
     isValid: jest.fn((dto) => {
       return dto != undefined ? '' : 'error';
+    }),
+    exists: jest.fn((id) => {
+      return id === 1;
     }),
   };
 
@@ -33,6 +39,17 @@ describe('CategoriesControllrer', () => {
     const dto = { name: 'test', parentCategoryId: 1 };
     expect(await controller.create(dto)).toEqual({
       id: expect.any(Number),
+      ...dto,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
+
+  it('should update a category', async () => {
+    const id = 1;
+    const dto = { name: 'test', parentCategoryId: null };
+    expect(await controller.update(id, dto)).toEqual({
+      id,
       ...dto,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
