@@ -17,6 +17,8 @@ describe('CategoriesControllrer', () => {
     exists: jest.fn((id) => {
       return id === 1;
     }),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+    delete: jest.fn((_id) => {}),
   };
 
   beforeEach(async () => {
@@ -54,5 +56,12 @@ describe('CategoriesControllrer', () => {
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
+  });
+
+  it('should delete a category', async () => {
+    const id = 1;
+    await controller.delete(id);
+    expect(mockService.delete).toHaveBeenCalledTimes(1);
+    expect(mockService.delete).toHaveBeenCalledWith(id);
   });
 });
