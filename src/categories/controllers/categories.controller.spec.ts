@@ -1,55 +1,49 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesController } from '@categories/controllers/categories.controller';
 import { CategoriesService } from '@categories/services/categories.service';
+import { CategoryDTO } from '../dtos/category.dto';
+import { Category } from '../entities/category.entity';
 
 describe('CategoriesControllrer', () => {
   let controller: CategoriesController;
+
+  const mockCategory = new Category();
+  mockCategory.name = 'test';
+  mockCategory.parentCategoryId = null;
+  mockCategory.createdAt = new Date();
+  mockCategory.updatedAt = new Date();
+
+  const mockCategories = [
+    mockCategory,
+    { ...mockCategory, name: 'test 2' },
+    { ...mockCategory, name: 'test 3' },
+  ];
+
+  const mockDTO = new CategoryDTO();
+  mockDTO.name = mockCategory.name;
+  mockDTO.parentCategoryId = mockCategory.parentCategoryId;
+
   const mockService = {
     create: jest.fn((dto) => {
-      return { id: 2, ...dto, createdAt: new Date(), updatedAt: new Date() };
+      return { id: 1, ...mockCategory, ...dto };
     }),
     update: jest.fn((id, dto) => {
-      return { id, ...dto, createdAt: new Date(), updatedAt: new Date() };
+      return { id, ...mockCategory, ...dto };
     }),
-    isValid: jest.fn((dto) => {
-      return dto != undefined ? '' : 'error';
-    }),
-    exists: jest.fn((id) => {
-      return id === 1;
-    }),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-    delete: jest.fn((_id) => {}),
+    delete: jest.fn(),
     findAll: jest.fn(() => {
-      return [
-        {
-          id: 1,
-          name: 'test',
-          parentCategoryId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
+      return mockCategories;
     }),
     findOne: jest.fn((id) => {
-      if (id === 1)
-        return {
-          id: 1,
-          name: 'test',
-          parentCategoryId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+      return { id, ...mockCategory };
     }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CategoriesController],
-      providers: [CategoriesService],
-    })
-      .overrideProvider(CategoriesService)
-      .useValue(mockService)
-      .compile();
+      providers: [{ provide: CategoriesService, useValue: mockService }],
+    }).compile();
 
     controller = module.get<CategoriesController>(CategoriesController);
   });
@@ -59,10 +53,9 @@ describe('CategoriesControllrer', () => {
   });
 
   it('should create a category', async () => {
-    const dto = { name: 'test', parentCategoryId: 1 };
-    expect(await controller.create(dto)).toEqual({
+    expect(await controller.create(mockDTO)).toEqual({
       id: expect.any(Number),
-      ...dto,
+      ...mockDTO,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
@@ -70,10 +63,9 @@ describe('CategoriesControllrer', () => {
 
   it('should update a category', async () => {
     const id = 1;
-    const dto = { name: 'test', parentCategoryId: null };
-    expect(await controller.update(id, dto)).toEqual({
+    expect(await controller.update(id, mockDTO)).toEqual({
       id,
-      ...dto,
+      ...mockDTO,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
@@ -87,25 +79,14 @@ describe('CategoriesControllrer', () => {
   });
 
   it('should get all categories', async () => {
-    expect(await controller.getall()).toEqual([
-      {
-        id: 1,
-        name: 'test',
-        parentCategoryId: null,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      },
-    ]);
+    expect(await controller.getall()).toEqual(mockCategories);
   });
 
   it('should get one category', async () => {
     const id = 1;
     expect(await controller.getOne(id)).toEqual({
-      id: 1,
-      name: 'test',
-      parentCategoryId: null,
-      createdAt: expect.any(Date),
-      updatedAt: expect.any(Date),
+      id,
+      ...mockCategory,
     });
   });
 });
