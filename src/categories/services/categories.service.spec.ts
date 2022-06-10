@@ -27,6 +27,7 @@ describe('CategoriesService', () => {
   mockChildCategory.parentCategoryId = 1;
   mockChildCategory.createdAt = new Date();
   mockChildCategory.updatedAt = new Date();
+  mockParentCategory.childCategories = [mockChildCategory];
 
   const mockParentCategory2 = new Category();
   mockParentCategory2.id = 3;
@@ -41,6 +42,7 @@ describe('CategoriesService', () => {
   mockChildCategory2.parentCategoryId = 3;
   mockChildCategory2.createdAt = new Date();
   mockChildCategory2.updatedAt = new Date();
+  mockParentCategory2.childCategories = [mockChildCategory2];
 
   const mockCategories = [
     mockCategory,
@@ -140,6 +142,7 @@ describe('CategoriesService', () => {
       name: 'updated',
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
+      childCategories: expect.any(Array),
     });
   });
 
@@ -157,12 +160,12 @@ describe('CategoriesService', () => {
     ).rejects.toThrow(BadRequestException);
   });
 
-  // it("should not update a category, category with children can't be a subcategory", async () => {
-  //   const id = 1;
-  //   expect(
-  //     service.update(id, { ...mockDTO, parentCategoryId: 3 }),
-  //   ).rejects.toThrow(BadRequestException);
-  // });
+  it("should not update a category, category with children can't be a subcategory", async () => {
+    const id = 1;
+    expect(
+      service.update(id, { ...mockDTO, parentCategoryId: 3 }),
+    ).rejects.toThrow(BadRequestException);
+  });
 
   it('should delete a category', async () => {
     const id = 1;

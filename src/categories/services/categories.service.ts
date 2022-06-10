@@ -18,14 +18,26 @@ export class CategoriesService {
     return (await this.categoriesRepo.count({ id: id })) > 0;
   }
 
-  async isValid(dto: CategoryDTO): Promise<string> {
+  async isValid(dto: CategoryDTO, category: Category = null): Promise<string> {
     if (dto.parentCategoryId) {
+      //Parent category id is not in the system
       if (!(await this.exists(dto.parentCategoryId))) {
         return 'Parent category does not exist';
       }
       const parent = await this.findOne(dto.parentCategoryId);
+
+      //The new parent category is a subcategory and can't have children
       if (parent && parent.parentCategoryId != undefined) {
         return "Parent category can't be a subcategory";
+      }
+
+      //Current category has children and can't become a subcategory
+      if (
+        category &&
+        category.childCategories &&
+        category.childCategories.length > 0
+      ) {
+        return "Category with children can't be a subcategory";
       }
     }
     return '';
@@ -52,11 +64,11 @@ export class CategoriesService {
   }
 
   async update(id: number, dto: CategoryDTO): Promise<Category> {
-    const error = await this.isValid(dto);
+    const category = await this.categoriesRepo.findOne(id);
+    const error = await this.isValid(dto, category);
     if (error) {
       throw new BadRequestException(error);
     }
-    const category = await this.categoriesRepo.findOne(id);
     this.categoriesRepo.merge(category, dto);
     return this.categoriesRepo.save(category);
   }

@@ -1,7 +1,7 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, MaxLength } from 'class-validator';
 
 export class CategoryDTO {
-  @IsString()
+  @MaxLength(50)
   name: string;
 
   @IsNumber()
