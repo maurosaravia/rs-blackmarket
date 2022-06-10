@@ -19,12 +19,14 @@ export class CategoriesService {
   }
 
   async isValid(dto: CategoryDTO): Promise<string> {
-    if (dto.parentCategoryId && !(await this.exists(dto.parentCategoryId))) {
-      return 'Parent category does not exist';
-    }
-    const parent = await this.findOne(dto.parentCategoryId);
-    if (parent && parent.parentCategoryId != undefined) {
-      return "Parent category can't be a subcategory";
+    if (dto.parentCategoryId) {
+      if (!(await this.exists(dto.parentCategoryId))) {
+        return 'Parent category does not exist';
+      }
+      const parent = await this.findOne(dto.parentCategoryId);
+      if (parent && parent.parentCategoryId != undefined) {
+        return "Parent category can't be a subcategory";
+      }
     }
     return '';
   }
@@ -33,16 +35,16 @@ export class CategoriesService {
     return this.categoriesRepo.find();
   }
 
-  findOne(id: number): Promise<Category> {
-    if (!this.exists(id)) {
+  async findOne(id: number): Promise<Category> {
+    if (!(await this.exists(id))) {
       throw new NotFoundException();
     }
     return this.categoriesRepo.findOne(id);
   }
 
-  create(dto: CategoryDTO): Promise<Category> {
-    const error = this.isValid(dto);
-    if (!error) {
+  async create(dto: CategoryDTO): Promise<Category> {
+    const error = await this.isValid(dto);
+    if (error) {
       throw new BadRequestException(error);
     }
     const category = this.categoriesRepo.create(dto);
@@ -50,8 +52,8 @@ export class CategoriesService {
   }
 
   async update(id: number, dto: CategoryDTO): Promise<Category> {
-    const error = this.isValid(dto);
-    if (!error) {
+    const error = await this.isValid(dto);
+    if (error) {
       throw new BadRequestException(error);
     }
     const category = await this.categoriesRepo.findOne(id);
@@ -60,7 +62,7 @@ export class CategoriesService {
   }
 
   async delete(id: number): Promise<void> {
-    if (!this.exists(id)) {
+    if (!(await this.exists(id))) {
       throw new NotFoundException();
     }
     await this.categoriesRepo.delete(id);

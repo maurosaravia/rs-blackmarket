@@ -4,7 +4,7 @@ import { CategoriesService } from '@categories/services/categories.service';
 import { CategoryDTO } from '../dtos/category.dto';
 import { Category } from '../entities/category.entity';
 
-describe('CategoriesControllrer', () => {
+describe('CategoriesController', () => {
   let controller: CategoriesController;
 
   const mockCategory = new Category();
