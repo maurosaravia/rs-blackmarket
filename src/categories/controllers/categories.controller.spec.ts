@@ -30,6 +30,9 @@ describe('CategoriesController', () => {
     findOne: jest.fn((id) => {
       return { id, ...mockCategory };
     }),
+    create: jest.fn((dto) => {
+      return { id: 1, ...mockCategory, ...dto };
+    }),
   };
 
   beforeEach(async () => {
@@ -54,6 +57,15 @@ describe('CategoriesController', () => {
     expect(controller.getOne(id)).resolves.toEqual({
       id,
       ...mockCategory,
+    });
+  });
+
+  it('should create a category', async () => {
+    expect(controller.create(mockDTO)).resolves.toEqual({
+      id: expect.any(Number),
+      ...mockDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
     });
   });
 });

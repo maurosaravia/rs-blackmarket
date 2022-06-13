@@ -4,6 +4,7 @@ import { CategoryDTO } from '@categories/dtos/category.dto';
 import { Category } from '@categories/entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
+  BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -78,6 +79,12 @@ describe('CategoriesService', () => {
       if (!mockCategories) throw 'unexpected';
       return mockCategories;
     }),
+    create: jest.fn((dto) => {
+      return { ...dto };
+    }),
+    save: jest.fn((dto) => {
+      return { id: 1, ...mockCategory, ...dto };
+    }),
   };
 
   beforeEach(async () => {
@@ -122,5 +129,35 @@ describe('CategoriesService', () => {
     mockCategories = null;
     expect(service.findOne(100)).rejects.toThrow(InternalServerErrorException);
     mockCategories = correctMockCategories;
+  });
+
+  it('should create a category', () => {
+    expect(service.create(mockDTO)).resolves.toEqual({
+      id: expect.any(Number),
+      ...mockDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
+
+  it('should create a child category', async () => {
+    expect(service.create(mockChildDTO)).resolves.toEqual({
+      id: expect.any(Number),
+      ...mockChildDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
+
+  it("should not create a category, parentCategory doesn't exist", async () => {
+    expect(
+      service.create({ ...mockDTO, parentCategoryId: 100 }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it("should not create a category, parentCategory can't be a subcategory", async () => {
+    expect(service.create({ ...mockDTO, parentCategoryId: 2 })).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });
