@@ -85,6 +85,9 @@ describe('CategoriesService', () => {
     save: jest.fn((dto) => {
       return { id: 1, ...mockCategory, ...dto };
     }),
+    merge: jest.fn((category, dto) => {
+      category.name = dto.name;
+    }),
   };
 
   beforeEach(async () => {
@@ -159,5 +162,47 @@ describe('CategoriesService', () => {
     expect(service.create({ ...mockDTO, parentCategoryId: 2 })).rejects.toThrow(
       BadRequestException,
     );
+  });
+
+  it('should update a category', () => {
+    const id = 1;
+    expect(
+      service.update(id, { ...mockParentDTO, name: 'updated' }),
+    ).resolves.toEqual({
+      id,
+      ...mockParentDTO,
+      name: 'updated',
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      childCategories: expect.any(Array),
+    });
+  });
+
+  it("should not update a category, parentCategory doesn't exist", () => {
+    const id = 1;
+    expect(
+      service.update(id, { ...mockParentDTO, parentCategoryId: 100 }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it("should not update a category, parentCategory can't be a subcategory", () => {
+    const id = 2;
+    expect(
+      service.update(id, { ...mockDTO, parentCategoryId: 4 }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it("should not update a category, category can't be its own parent", () => {
+    const id = 2;
+    expect(
+      service.update(id, { ...mockDTO, parentCategoryId: id }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it("should not update a category, category with children can't be a subcategory", () => {
+    const id = 1;
+    expect(
+      service.update(id, { ...mockDTO, parentCategoryId: 3 }),
+    ).rejects.toThrow(BadRequestException);
   });
 });

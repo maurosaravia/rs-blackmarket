@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CategoriesService } from '@categories/services/categories.service';
 import { Category } from '@categories/entities/category.entity';
@@ -27,5 +28,13 @@ export class CategoriesController {
   @Post()
   async create(@Body() dto: CategoryDTO): Promise<Category> {
     return this.categoriesService.create(dto);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CategoryDTO,
+  ): Promise<Category> {
+    return this.categoriesService.update(id, dto);
   }
 }

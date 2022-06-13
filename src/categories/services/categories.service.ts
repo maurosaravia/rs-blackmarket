@@ -37,7 +37,10 @@ export class CategoriesService {
     }
   }
 
-  async validateDTO(dto: CategoryDTO): Promise<void> {
+  async validateDTO(
+    dto: CategoryDTO,
+    category: Category = null,
+  ): Promise<void> {
     if (dto.parentCategoryId) {
       //Parent category id is not in the system
       let parent: Category;
@@ -53,6 +56,23 @@ export class CategoriesService {
       if (parent.parentCategoryId) {
         throw new BadRequestException("Parent category can't be a subcategory");
       }
+
+      if (category) {
+        //Category can't be its own parent
+        if (dto.parentCategoryId === category.id)
+          throw new BadRequestException("Category can't be its own parent");
+
+        //Current category has children and can't become a subcategory
+        if (
+          category &&
+          category.childCategories &&
+          category.childCategories.length > 0
+        ) {
+          throw new BadRequestException(
+            "Category with children can't be a subcategory",
+          );
+        }
+      }
     }
   }
 
@@ -60,5 +80,16 @@ export class CategoriesService {
     await this.validateDTO(dto);
     const category = this.categoriesRepo.create(dto);
     return this.categoriesRepo.save(category);
+  }
+
+  async update(id: number, dto: CategoryDTO): Promise<Category> {
+    const category = await this.findOne(id);
+    await this.validateDTO(dto, category);
+    try {
+      this.categoriesRepo.merge(category, dto);
+      return this.categoriesRepo.save(category);
+    } catch (exception) {
+      throw new InternalServerErrorException();
+    }
   }
 }
