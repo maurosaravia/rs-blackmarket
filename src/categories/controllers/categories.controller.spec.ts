@@ -48,11 +48,11 @@ describe('CategoriesController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get all categories', async () => {
+  it('should get all categories', () => {
     expect(controller.getAll()).resolves.toEqual(mockCategories);
   });
 
-  it('should get one category', async () => {
+  it('should get one category', () => {
     const id = 1;
     expect(controller.getOne(id)).resolves.toEqual({
       id,
