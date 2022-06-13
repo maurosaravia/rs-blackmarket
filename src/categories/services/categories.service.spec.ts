@@ -116,6 +116,7 @@ describe('CategoriesService', () => {
   it('should not get a category, id not found', () => {
     expect(service.findOne(100)).rejects.toThrow(NotFoundException);
   });
+
   it('should not get a category, unexpected error in repository', () => {
     const correctMockCategories = mockCategories;
     mockCategories = null;
