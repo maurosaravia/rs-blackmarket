@@ -1,17 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { CategoriesService } from '@categories/services/categories.service';
+import { Category } from '@categories/entities/category.entity';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  getall() {
+  async getAll(): Promise<Category[]> {
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: number) {
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<Category> {
     return this.categoriesService.findOne(id);
   }
 }
