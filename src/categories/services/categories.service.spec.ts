@@ -3,7 +3,12 @@ import { CategoriesService } from '@categories/services/categories.service';
 import { CategoryDTO } from '@categories/dtos/category.dto';
 import { Category } from '@categories/entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
+import { CategoriesRepository } from '@categories/repositories/categories.repository';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -43,8 +48,7 @@ describe('CategoriesService', () => {
   mockChildCategory2.createdAt = new Date();
   mockChildCategory2.updatedAt = new Date();
   mockParentCategory2.childCategories = [mockChildCategory2];
-
-  const mockCategories = [
+  let mockCategories = [
     mockCategory,
     mockParentCategory,
     mockChildCategory,
@@ -65,14 +69,13 @@ describe('CategoriesService', () => {
   mockChildDTO.parentCategoryId = mockChildCategory.parentCategoryId;
 
   const mockRepository = {
-    findOne: jest.fn((id) => {
+    findById: jest.fn((id) => {
+      if (!mockCategories) throw 'unexpected';
+      if (!mockCategories[id]) throw new EntityNotFoundError(Category, 'test');
       return mockCategories[id];
     }),
-    count: jest.fn((conditions) => {
-      return mockCategories.filter((category) => category.id == conditions.id)
-        .length;
-    }),
     find: jest.fn(() => {
+      if (!mockCategories) throw 'unexpected';
       return mockCategories;
     }),
   };
@@ -81,7 +84,10 @@ describe('CategoriesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoriesService,
-        { provide: getRepositoryToken(Category), useValue: mockRepository },
+        {
+          provide: getRepositoryToken(CategoriesRepository),
+          useValue: mockRepository,
+        },
       ],
     }).compile();
 
@@ -93,7 +99,14 @@ describe('CategoriesService', () => {
   });
 
   it('should get all categories', () => {
-    expect(service.findAll()).toBe(mockCategories);
+    expect(service.findAll()).resolves.toBe(mockCategories);
+  });
+
+  it('should not get all categories, unexpected error in repository', () => {
+    const correctMockCategories = mockCategories;
+    mockCategories = null;
+    expect(service.findAll()).rejects.toThrow(InternalServerErrorException);
+    mockCategories = correctMockCategories;
   });
 
   it('should get one category', () => {
@@ -102,5 +115,11 @@ describe('CategoriesService', () => {
 
   it('should not get a category, id not found', () => {
     expect(service.findOne(100)).rejects.toThrow(NotFoundException);
+  });
+  it('should not get a category, unexpected error in repository', () => {
+    const correctMockCategories = mockCategories;
+    mockCategories = null;
+    expect(service.findOne(100)).rejects.toThrow(InternalServerErrorException);
+    mockCategories = correctMockCategories;
   });
 });

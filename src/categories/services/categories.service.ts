@@ -4,38 +4,33 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Category } from '@categories/entities/category.entity';
+import { CategoriesRepository } from '@categories/repositories/categories.repository';
+import { EntityNotFoundError } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectRepository(Category) private categoriesRepo: Repository<Category>,
+    @InjectRepository(CategoriesRepository)
+    private readonly categoriesRepo: CategoriesRepository,
   ) {}
 
-  async exists(id: number): Promise<boolean> {
+  async findAll(): Promise<Category[]> {
     try {
-      return (await this.categoriesRepo.count({ id: id })) > 0;
-    } catch (exception) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  findAll(): Promise<Category[]> {
-    try {
-      return this.categoriesRepo.find();
+      const categories = await this.categoriesRepo.find();
+      return categories;
     } catch (exception) {
       throw new InternalServerErrorException();
     }
   }
 
   async findOne(id: number): Promise<Category> {
-    if (!(await this.exists(id))) {
-      throw new NotFoundException();
-    }
     try {
-      return this.categoriesRepo.findOne(id);
+      const category = await this.categoriesRepo.findById(id);
+      return category;
     } catch (exception) {
+      if (exception instanceof EntityNotFoundError)
+        throw new NotFoundException();
       throw new InternalServerErrorException();
     }
   }
