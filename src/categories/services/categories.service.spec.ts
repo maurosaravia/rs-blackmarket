@@ -140,7 +140,7 @@ describe('CategoriesService', () => {
     });
   });
 
-  it('should create a child category', async () => {
+  it('should create a child category', () => {
     expect(service.create(mockChildDTO)).resolves.toEqual({
       id: expect.any(Number),
       ...mockChildDTO,
@@ -149,13 +149,13 @@ describe('CategoriesService', () => {
     });
   });
 
-  it("should not create a category, parentCategory doesn't exist", async () => {
+  it("should not create a category, parentCategory doesn't exist", () => {
     expect(
       service.create({ ...mockDTO, parentCategoryId: 100 }),
     ).rejects.toThrow(BadRequestException);
   });
 
-  it("should not create a category, parentCategory can't be a subcategory", async () => {
+  it("should not create a category, parentCategory can't be a subcategory", () => {
     expect(service.create({ ...mockDTO, parentCategoryId: 2 })).rejects.toThrow(
       BadRequestException,
     );

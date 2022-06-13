@@ -60,7 +60,7 @@ describe('CategoriesController', () => {
     });
   });
 
-  it('should create a category', async () => {
+  it('should create a category', () => {
     expect(controller.create(mockDTO)).resolves.toEqual({
       id: expect.any(Number),
       ...mockDTO,
