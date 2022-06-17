@@ -1,39 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesController } from '@categories/controllers/categories.controller';
 import { CategoriesService } from '@categories/services/categories.service';
-import { CategoryDTO } from '@categories/dtos/category.dto';
-import { Category } from '@categories/entities/category.entity';
+import {
+  mockCategories,
+  mockCategory,
+  mockDTO,
+  mockService,
+} from '@categories/mocks/categories.mock';
 
 describe('CategoriesController', () => {
   let controller: CategoriesController;
-
-  const mockCategory = new Category();
-  mockCategory.name = 'test';
-  mockCategory.parentCategoryId = null;
-  mockCategory.createdAt = new Date();
-  mockCategory.updatedAt = new Date();
-
-  const mockCategories = [
-    mockCategory,
-    { ...mockCategory, name: 'test 2' },
-    { ...mockCategory, name: 'test 3' },
-  ];
-
-  const mockDTO = new CategoryDTO();
-  mockDTO.name = mockCategory.name;
-  mockDTO.parentCategoryId = mockCategory.parentCategoryId;
-
-  const mockService = {
-    findAll: jest.fn(() => {
-      return mockCategories;
-    }),
-    findOne: jest.fn((id) => {
-      return { id, ...mockCategory };
-    }),
-    create: jest.fn((dto) => {
-      return { id: 1, ...mockCategory, ...dto };
-    }),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
