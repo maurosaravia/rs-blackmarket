@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoriesModule } from '@categories/categories.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       retryDelay: parseInt(process.env.TYPEORM_DELAY),
       retryAttempts: parseInt(process.env.TYPEORM_ATTEMPTS),
     }),
+    CategoriesModule,
   ],
 })
 export class AppModule {}
