@@ -58,7 +58,11 @@ export class CategoriesService {
 
   async create(dto: CategoryDTO): Promise<Category> {
     await this.validateDTO(dto);
-    const category = this.categoriesRepo.create(dto);
-    return this.categoriesRepo.save(category);
+    try {
+      const category = await this.categoriesRepo.createFromDto(dto);
+      return category;
+    } catch (exception) {
+      throw new InternalServerErrorException();
+    }
   }
 }

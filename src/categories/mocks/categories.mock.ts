@@ -65,6 +65,9 @@ const mockService = {
   findOne: jest.fn((id) => {
     return { id, ...mockCategory };
   }),
+  create: jest.fn((dto) => {
+    return { id: 1, ...mockCategory, ...dto };
+  }),
 };
 
 const mockRepository = {
@@ -74,6 +77,9 @@ const mockRepository = {
   }),
   find: jest.fn(() => {
     return mockCategories;
+  }),
+  createFromDto: jest.fn((dto) => {
+    return { id: 1, ...mockCategory, ...dto };
   }),
 };
 
