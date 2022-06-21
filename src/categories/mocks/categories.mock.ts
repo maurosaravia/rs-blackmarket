@@ -77,6 +77,9 @@ const mockRepository = {
     return mockCategories;
   }),
   softDelete: jest.fn(),
+  save: jest.fn((category) => {
+    return { id: 1, ...category };
+  }),
 };
 
 export {

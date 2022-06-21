@@ -66,6 +66,15 @@ describe('CategoriesService', () => {
     expect(mockRepository.softDelete).toHaveBeenCalledWith(id);
   });
 
+  it('should delete a category and modify its children', async () => {
+    const id = 1;
+    const category = await service.findOne(id);
+    const children = category.childCategories;
+    await service.delete(id);
+    for (let i = 0; i < children.length; i++)
+      expect(children[i].parentCategoryId).toBeNull();
+  });
+
   it('should not delete a category, id not found', () => {
     expect(service.delete(100)).rejects.toThrow(NotFoundException);
   });
