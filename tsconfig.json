@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "src/*": ["src/*"],
-      "@categories/*": ["src/categories/*"]
+      "@categories/*": ["src/categories/*"],
+      "@users/*": ["src/users/*"]
     }
   }
 }
