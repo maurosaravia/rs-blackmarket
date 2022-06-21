@@ -65,6 +65,7 @@ const mockService = {
   findOne: jest.fn((id) => {
     return { id, ...mockCategory };
   }),
+  delete: jest.fn(),
 };
 
 const mockRepository = {
@@ -75,6 +76,7 @@ const mockRepository = {
   find: jest.fn(() => {
     return mockCategories;
   }),
+  softDelete: jest.fn(),
 };
 
 export {

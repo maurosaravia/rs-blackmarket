@@ -58,4 +58,22 @@ describe('CategoriesService', () => {
     });
     expect(service.findOne(100)).rejects.toThrow(InternalServerErrorException);
   });
+
+  it('should delete a category', async () => {
+    const id = 1;
+    await service.delete(id);
+    expect(mockRepository.softDelete).toHaveBeenCalledTimes(1);
+    expect(mockRepository.softDelete).toHaveBeenCalledWith(id);
+  });
+
+  it('should not delete a category, id not found', () => {
+    expect(service.delete(100)).rejects.toThrow(NotFoundException);
+  });
+
+  it('should not delete a category, unexpected error in repository', () => {
+    mockRepository.softDelete.mockImplementationOnce(() => {
+      throw 'unexpected';
+    });
+    expect(service.delete(1)).rejects.toThrow(InternalServerErrorException);
+  });
 });

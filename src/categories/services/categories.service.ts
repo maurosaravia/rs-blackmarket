@@ -34,4 +34,20 @@ export class CategoriesService {
       throw new InternalServerErrorException();
     }
   }
+
+  async delete(id: number): Promise<void> {
+    //check if exists
+    const category = await this.findOne(id);
+    try {
+      if (category.childCategories) {
+        category.childCategories.forEach((c) => {
+          c.parentCategoryId = null;
+          this.categoriesRepo.save(c);
+        });
+      }
+      await this.categoriesRepo.softDelete(id);
+    } catch (exception) {
+      throw new InternalServerErrorException();
+    }
+  }
 }
