@@ -25,7 +25,7 @@ export class CategoriesController {
   }
 
   @Post()
-  async create(@Body() dto: CategoryDTO): Promise<Category> {
-    return this.categoriesService.create(dto);
+  async create(@Body() createCategoryDto: CategoryDTO): Promise<Category> {
+    return this.categoriesService.create(createCategoryDto);
   }
 }

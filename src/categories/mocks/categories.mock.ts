@@ -78,7 +78,7 @@ const mockRepository = {
   find: jest.fn(() => {
     return mockCategories;
   }),
-  createFromDto: jest.fn((dto) => {
+  createCategory: jest.fn((dto) => {
     return { id: 1, ...mockCategory, ...dto };
   }),
 };

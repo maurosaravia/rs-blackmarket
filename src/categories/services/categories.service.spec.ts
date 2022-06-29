@@ -93,7 +93,7 @@ describe('CategoriesService', () => {
   });
 
   it('should not create a category, unexpected error in repository', () => {
-    mockRepository.createFromDto.mockImplementationOnce(() => {
+    mockRepository.createCategory.mockImplementationOnce(() => {
       throw 'unexpected';
     });
     expect(service.create({ ...mockDTO })).rejects.toThrow(

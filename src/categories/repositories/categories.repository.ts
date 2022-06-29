@@ -8,8 +8,8 @@ export class CategoriesRepository extends Repository<Category> {
     return this.findOneOrFail(id);
   }
 
-  async createFromDto(dto: CategoryDTO): Promise<Category> {
-    const category = this.create(dto);
+  createCategory(createCategoryDto: CategoryDTO): Promise<Category> {
+    const category = this.create(createCategoryDto);
     return this.save(category);
   }
 }
