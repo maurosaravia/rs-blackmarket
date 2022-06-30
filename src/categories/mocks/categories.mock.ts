@@ -71,8 +71,7 @@ const mockService = {
 };
 
 const mockRepository = {
-  findById: jest.fn((id) => {
-    if (!mockCategories[id]) throw new EntityNotFoundError(Category, 'test');
+  findOne: jest.fn((id) => {
     return mockCategories[id];
   }),
   find: jest.fn(() => {

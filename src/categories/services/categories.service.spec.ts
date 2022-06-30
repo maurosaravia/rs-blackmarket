@@ -43,9 +43,9 @@ describe('CategoriesService', () => {
 
     it('should fail when the repository throws an error', () => {
       mockRepository.find.mockImplementationOnce(() => {
-        throw 'unexpected';
+        throw new Error();
       });
-      expect(service.findAll()).rejects.toThrow(InternalServerErrorException);
+      expect(service.findAll()).rejects.toThrow(Error);
     });
   });
 
@@ -59,12 +59,10 @@ describe('CategoriesService', () => {
     });
 
     it('should not get a category when the repository throws an error', () => {
-      mockRepository.findById.mockImplementationOnce(() => {
-        throw 'unexpected';
+      mockRepository.findOne.mockImplementationOnce(() => {
+        throw new Error();
       });
-      expect(service.findOne(100)).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      expect(service.findOne(100)).rejects.toThrow(Error);
     });
   });
 
@@ -87,25 +85,11 @@ describe('CategoriesService', () => {
       });
     });
 
-    it("should not create a category when the parent category doesn't exist", () => {
-      expect(
-        service.create({ ...mockDTO, parentCategoryId: 100 }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should not create a category when the parent category is a subcategory', () => {
-      expect(
-        service.create({ ...mockDTO, parentCategoryId: 2 }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
     it('should not create a category when the repository throws an error', () => {
       mockRepository.createCategory.mockImplementationOnce(() => {
-        throw 'unexpected';
+        throw new Error();
       });
-      expect(service.create({ ...mockDTO })).rejects.toThrow(
-        InternalServerErrorException,
-      );
+      expect(service.create({ ...mockDTO })).rejects.toThrow(Error);
     });
   });
 });
