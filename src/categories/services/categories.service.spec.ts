@@ -2,12 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from '@categories/services/categories.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
+  BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CategoriesRepository } from '@categories/repositories/categories.repository';
 import {
   mockCategories,
+  mockChildDTO,
+  mockDTO,
   mockParentCategory,
   mockRepository,
 } from '@categories/mocks/categories.mock';
@@ -33,29 +36,60 @@ describe('CategoriesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should get all categories', () => {
-    expect(service.findAll()).resolves.toBe(mockCategories);
-  });
-
-  it('should not get all categories, unexpected error in repository', () => {
-    mockRepository.find.mockImplementationOnce(() => {
-      throw 'unexpected';
+  describe('findall', () => {
+    it('should get all categories when the repository works correctly', () => {
+      expect(service.findAll()).resolves.toBe(mockCategories);
     });
-    expect(service.findAll()).rejects.toThrow(InternalServerErrorException);
-  });
 
-  it('should get one category', () => {
-    expect(service.findOne(1)).resolves.toEqual(mockParentCategory);
-  });
-
-  it('should not get a category, id not found', () => {
-    expect(service.findOne(100)).rejects.toThrow(NotFoundException);
-  });
-
-  it('should not get a category, unexpected error in repository', () => {
-    mockRepository.findById.mockImplementationOnce(() => {
-      throw 'unexpected';
+    it('should fail when the repository throws an error', () => {
+      mockRepository.find.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.findAll()).rejects.toThrow(Error);
     });
-    expect(service.findOne(100)).rejects.toThrow(InternalServerErrorException);
+  });
+
+  describe('findOne', () => {
+    it('should get one category when the id exists', () => {
+      expect(service.findOne(1)).resolves.toEqual(mockParentCategory);
+    });
+
+    it('should not get a category when the id is not found', () => {
+      expect(service.findOne(100)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should not get a category when the repository throws an error', () => {
+      mockRepository.findOne.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.findOne(100)).rejects.toThrow(Error);
+    });
+  });
+
+  describe('create', () => {
+    it('should create a category when the dto is valid', () => {
+      expect(service.create(mockDTO)).resolves.toEqual({
+        id: expect.any(Number),
+        ...mockDTO,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+
+    it('should create a child category when the dto is valid', () => {
+      expect(service.create(mockChildDTO)).resolves.toEqual({
+        id: expect.any(Number),
+        ...mockChildDTO,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+
+    it('should not create a category when the repository throws an error', () => {
+      mockRepository.createCategory.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.create({ ...mockDTO })).rejects.toThrow(Error);
+    });
   });
 });
