@@ -92,4 +92,33 @@ describe('CategoriesService', () => {
       expect(service.create({ ...mockDTO })).rejects.toThrow(Error);
     });
   });
+
+  describe('delete', () => {
+    it('should delete a category when the id exists', async () => {
+      const id = 1;
+      await service.delete(id);
+      expect(mockRepository.softDelete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.softDelete).toHaveBeenCalledWith(id);
+    });
+
+    it('should delete a category and modify its children when it has children', async () => {
+      const id = 1;
+      const category = await service.findOne(id);
+      const children = category.childCategories;
+      await service.delete(id);
+      for (let i = 0; i < children.length; i++)
+        expect(children[i].parentCategoryId).toBeNull();
+    });
+
+    it('should not delete a category when the id is not found', () => {
+      expect(service.delete(100)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should not delete a category when the repository throws an error', () => {
+      mockRepository.softDelete.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.delete(1)).rejects.toThrow(Error);
+    });
+  });
 });

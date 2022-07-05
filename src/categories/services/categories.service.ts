@@ -16,12 +16,26 @@ export class CategoriesService {
   }
 
   async findOne(id: number): Promise<Category> {
-    const category = await this.categoriesRepo.findOne(id);
+    const category = await this.categoriesRepo.findOne(id, {
+      relations: ['childCategories'],
+    });
     if (!category) throw new NotFoundException();
     return category;
   }
 
   async create(createCategoryDto: CategoryDTO): Promise<Category> {
     return this.categoriesRepo.createCategory(createCategoryDto);
+  }
+
+  async delete(id: number): Promise<void> {
+    //check if exists
+    const category = await this.findOne(id);
+    if (category.childCategories) {
+      category.childCategories.forEach((c) => {
+        c.parentCategoryId = null;
+        this.categoriesRepo.save(c);
+      });
+    }
+    await this.categoriesRepo.softDelete(id);
   }
 }

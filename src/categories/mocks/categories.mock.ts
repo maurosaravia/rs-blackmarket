@@ -1,6 +1,5 @@
 import { Category } from '@categories/entities/category.entity';
 import { CategoryDTO } from '@categories/dtos/category.dto';
-import { EntityNotFoundError } from 'typeorm';
 
 const mockCategory = new Category();
 mockCategory.name = 'test';
@@ -68,6 +67,7 @@ const mockService = {
   create: jest.fn((dto) => {
     return { id: 1, ...mockCategory, ...dto };
   }),
+  delete: jest.fn(),
 };
 
 const mockRepository = {
@@ -79,6 +79,10 @@ const mockRepository = {
   }),
   createCategory: jest.fn((dto) => {
     return { id: 1, ...mockCategory, ...dto };
+  }),
+  softDelete: jest.fn(),
+  save: jest.fn((category) => {
+    return { id: 1, ...category };
   }),
 };
 
