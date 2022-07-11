@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '@users/controllers/users.controller';
-import { mockAdmin, mockService, mockUsers } from '@users/mocks/users.mock';
+import {
+  mockAdmin,
+  mockAdminDTO,
+  mockService,
+  mockUsers,
+} from '@users/mocks/users.mock';
 import { UsersService } from '@users/services/users.service';
 
 describe('UsersController', () => {
@@ -28,6 +33,15 @@ describe('UsersController', () => {
     expect(controller.getOne(id)).resolves.toEqual({
       id,
       ...mockAdmin,
+    });
+  });
+
+  it('should create a user', () => {
+    expect(controller.create(mockAdminDTO)).resolves.toEqual({
+      id: expect.any(Number),
+      ...mockAdminDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
     });
   });
 });
