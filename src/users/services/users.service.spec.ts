@@ -1,7 +1,4 @@
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockAdmin, mockRepository, mockUsers } from '@users/mocks/users.mock';
@@ -29,29 +26,33 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should get all users', () => {
-    expect(service.findAll()).resolves.toBe(mockUsers);
-  });
-
-  it('should not get all users, unexpected error in repository', () => {
-    mockRepository.find.mockImplementationOnce(() => {
-      throw 'unexpected';
+  describe('findAll', () => {
+    it('should get all users when the repository works correctly', () => {
+      expect(service.findAll()).resolves.toBe(mockUsers);
     });
-    expect(service.findAll()).rejects.toThrow(InternalServerErrorException);
-  });
 
-  it('should get one user', () => {
-    expect(service.findOne(1)).resolves.toEqual(mockAdmin);
-  });
-
-  it('should not get a user, id not found', () => {
-    expect(service.findOne(100)).rejects.toThrow(NotFoundException);
-  });
-
-  it('should not get a user, unexpected error in repository', () => {
-    mockRepository.findById.mockImplementationOnce(() => {
-      throw 'unexpected';
+    it('should not get all users when the repository throws an error', () => {
+      mockRepository.find.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.findAll()).rejects.toThrow(Error);
     });
-    expect(service.findOne(100)).rejects.toThrow(InternalServerErrorException);
+  });
+
+  describe('findOne', () => {
+    it('should get one user when the id exists', () => {
+      expect(service.findOne(1)).resolves.toEqual(mockAdmin);
+    });
+
+    it('should not get a user when the id is not found', () => {
+      expect(service.findOne(100)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should not get a user when the repository throws an error', () => {
+      mockRepository.findById.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.findOne(100)).rejects.toThrow(Error);
+    });
   });
 });

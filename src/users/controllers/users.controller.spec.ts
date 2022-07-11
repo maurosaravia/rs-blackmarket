@@ -19,11 +19,11 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get all categories', () => {
+  it('should get all users', () => {
     expect(controller.getAll()).resolves.toEqual(mockUsers);
   });
 
-  it('should get one category', () => {
+  it('should get one users', () => {
     const id = 1;
     expect(controller.getOne(id)).resolves.toEqual({
       id,

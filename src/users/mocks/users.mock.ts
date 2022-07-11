@@ -1,4 +1,3 @@
-import { EntityNotFoundError } from 'typeorm';
 import { User } from '@users/entities/user.entity';
 import { Role } from '@users/entities/role.enum';
 
@@ -33,7 +32,6 @@ const mockService = {
 
 const mockRepository = {
   findById: jest.fn((id) => {
-    if (!mockUsers[id]) throw new EntityNotFoundError(User, 'test');
     return mockUsers[id];
   }),
   find: jest.fn(() => {

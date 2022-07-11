@@ -1,10 +1,5 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError } from 'typeorm';
 import { User } from '@users/entities/user.entity';
 import { UsersRepository } from '@users/repositories/users.repository';
 
@@ -16,22 +11,12 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    try {
-      const users = await this.usersRepo.find();
-      return users;
-    } catch (exception) {
-      throw new InternalServerErrorException();
-    }
+    return this.usersRepo.find();
   }
 
   async findOne(id: number): Promise<User> {
-    try {
-      const category = await this.usersRepo.findById(id);
-      return category;
-    } catch (exception) {
-      if (exception instanceof EntityNotFoundError)
-        throw new NotFoundException();
-      throw new InternalServerErrorException();
-    }
+    const category = await this.usersRepo.findById(id);
+    if (!category) throw new NotFoundException();
+    return category;
   }
 }
