@@ -1,4 +1,3 @@
-import { EntityNotFoundError } from 'typeorm';
 import { User } from '@users/entities/user.entity';
 import { Role } from '@users/entities/role.enum';
 import { UserDTO } from '@users/dtos/user.dto';
