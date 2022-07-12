@@ -20,7 +20,8 @@
     "paths": {
       "src/*": ["src/*"],
       "@categories/*": ["src/categories/*"],
-      "@users/*": ["src/users/*"]
+      "@users/*": ["src/users/*"],
+      "@auth/*": ["src/auth/*"],
     }
   }
 }
