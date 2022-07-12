@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@users/entities/user.entity';
 import { UsersRepository } from '@users/repositories/users.repository';
 import { UserDTO } from '@users/dtos/user.dto';
-import { genSaltSync, hashSync } from 'bcrypt';
+import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +16,10 @@ export class UsersService {
     return hashSync(password, genSaltSync());
   }
 
+  checkPassword(password: string, userPassword: string): boolean {
+    return compareSync(password, userPassword);
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepo.find();
   }
@@ -24,6 +28,10 @@ export class UsersService {
     const category = await this.usersRepo.findById(id);
     if (!category) throw new NotFoundException();
     return category;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return this.usersRepo.findOne({ where: { email }, select: ['password'] });
   }
 
   async create(createUserDto: UserDTO): Promise<User> {
