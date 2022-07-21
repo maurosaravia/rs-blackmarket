@@ -1,23 +1,21 @@
 import { User } from '@users/entities/user.entity';
 import { Role } from '@users/entities/role.enum';
+import { faker } from '@faker-js/faker';
+let firstname = faker.name.firstName();
+let lastname = faker.name.lastName();
+let email = faker.internet.email();
+let password = faker.internet.password();
+let role = Role.USER;
+const mockUser = new User({ firstname, lastname, email, password, role });
+mockUser.createdAt = mockUser.updatedAt = faker.date.past();
 
-const mockUser = new User();
-mockUser.firstname = 'user';
-mockUser.lastname = 'user';
-mockUser.email = 'user@user.com';
-mockUser.password = '123456';
-mockUser.role = Role.USER;
-mockUser.createdAt = new Date();
-mockUser.updatedAt = new Date();
-
-const mockAdmin = new User();
-mockAdmin.firstname = 'admin';
-mockAdmin.lastname = 'admin';
-mockAdmin.email = 'admin@admin.com';
-mockAdmin.password = '1234567';
-mockAdmin.role = Role.ADMIN;
-mockAdmin.createdAt = new Date();
-mockAdmin.updatedAt = new Date();
+firstname = faker.name.firstName();
+lastname = faker.name.lastName();
+email = faker.internet.email();
+password = faker.internet.password();
+role = Role.ADMIN;
+const mockAdmin = new User({ firstname, lastname, email, password, role });
+mockAdmin.createdAt = mockAdmin.updatedAt = faker.date.past();
 
 const mockUsers = [mockUser, mockAdmin];
 
