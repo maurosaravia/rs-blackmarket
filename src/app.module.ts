@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from '@categories/categories.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CategoriesModule } from '@categories/categories.module';
       retryAttempts: parseInt(process.env.TYPEORM_ATTEMPTS),
     }),
     CategoriesModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
