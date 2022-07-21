@@ -5,6 +5,8 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { ExistsCategory } from '@categories/decorators/existscategory.decorator';
+import { IsNotSubcategory } from '@categories/decorators/isnotsubcategory.decorator';
 
 export class CategoryDTO {
   @IsString()
@@ -14,5 +16,7 @@ export class CategoryDTO {
 
   @IsOptional()
   @IsNumber()
+  @ExistsCategory({ message: 'Parent category does not exist' })
+  @IsNotSubcategory({ message: "Parent category can't be a subcategory" })
   parentCategoryId?: number;
 }

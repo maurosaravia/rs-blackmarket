@@ -66,6 +66,7 @@ describe('UsersService', () => {
       expect(service.create(mockAdminDTO)).resolves.toEqual({
         id: expect.any(Number),
         ...mockAdminDTO,
+        password: undefined,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });

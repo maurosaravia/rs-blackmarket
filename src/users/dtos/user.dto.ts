@@ -9,6 +9,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IUser } from '@users/interfaces/user.interface';
 
 export class UserDTO {
   @IsOptional()
@@ -35,4 +36,12 @@ export class UserDTO {
 
   @IsEnum(Role)
   role: Role;
+
+  constructor(user?: IUser) {
+    this.firstname = user?.firstname ?? '';
+    this.lastname = user?.lastname ?? '';
+    this.email = user?.email ?? '';
+    this.password = user?.password ?? '';
+    this.role = user?.role ?? Role.USER;
+  }
 }

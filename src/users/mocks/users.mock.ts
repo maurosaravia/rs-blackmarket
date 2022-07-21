@@ -1,40 +1,33 @@
 import { User } from '@users/entities/user.entity';
 import { Role } from '@users/entities/role.enum';
 import { UserDTO } from '@users/dtos/user.dto';
+import { faker } from '@faker-js/faker';
 
-const mockUser = new User();
-mockUser.firstname = 'user';
-mockUser.lastname = 'user';
-mockUser.email = 'user@user.com';
-mockUser.password = '123456';
-mockUser.role = Role.USER;
-mockUser.createdAt = new Date();
-mockUser.updatedAt = new Date();
+let firstname = faker.name.firstName();
+let lastname = faker.name.lastName();
+let email = faker.internet.email();
+let password = faker.internet.password();
+let role = Role.USER;
+const mockUser = new User({ firstname, lastname, email, password, role });
+mockUser.createdAt = mockUser.updatedAt = faker.date.past();
+const mockUserDTO = new UserDTO({ firstname, lastname, email, password, role });
 
-const mockAdmin = new User();
-mockAdmin.firstname = 'admin';
-mockAdmin.lastname = 'admin';
-mockAdmin.email = 'admin@admin.com';
-mockAdmin.password = '1234567';
-mockAdmin.role = Role.ADMIN;
-mockAdmin.createdAt = new Date();
-mockAdmin.updatedAt = new Date();
+firstname = faker.name.firstName();
+lastname = faker.name.lastName();
+email = faker.internet.email();
+password = faker.internet.password();
+role = Role.ADMIN;
+const mockAdmin = new User({ firstname, lastname, email, password, role });
+const mockAdminDTO = new UserDTO({
+  firstname,
+  lastname,
+  email,
+  password,
+  role,
+});
+mockAdmin.createdAt = mockAdmin.updatedAt = faker.date.past();
 
 const mockUsers = [mockUser, mockAdmin];
-
-const mockUserDTO = new UserDTO();
-mockUserDTO.firstname = mockUser.firstname;
-mockUserDTO.lastname = mockUser.lastname;
-mockUserDTO.email = mockUser.email;
-mockUserDTO.password = mockUser.password;
-mockUserDTO.role = mockUser.role;
-
-const mockAdminDTO = new UserDTO();
-mockAdminDTO.firstname = mockAdmin.firstname;
-mockAdminDTO.lastname = mockAdmin.lastname;
-mockAdminDTO.email = mockAdmin.email;
-mockAdminDTO.password = mockAdmin.password;
-mockAdminDTO.role = mockAdmin.role;
 
 const mockService = {
   findAll: jest.fn(() => {

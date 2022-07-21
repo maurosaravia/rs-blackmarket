@@ -4,6 +4,7 @@ import { CategoriesService } from '@categories/services/categories.service';
 import {
   mockCategories,
   mockCategory,
+  mockDTO,
   mockService,
 } from '@categories/mocks/categories.mock';
 
@@ -32,6 +33,25 @@ describe('CategoriesController', () => {
     expect(controller.getOne(id)).resolves.toEqual({
       id,
       ...mockCategory,
+    });
+  });
+
+  it('should create a category', () => {
+    expect(controller.create(mockDTO)).resolves.toEqual({
+      id: expect.any(Number),
+      ...mockDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+  });
+
+  it('should update a category', () => {
+    const id = 1;
+    expect(controller.update(id, mockDTO)).resolves.toEqual({
+      id,
+      ...mockDTO,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
     });
   });
 });
