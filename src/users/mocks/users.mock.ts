@@ -48,7 +48,7 @@ const mockRepository = {
   find: jest.fn(() => {
     return mockUsers;
   }),
-  createUser: jest.fn((dto) => {
+  saveDTO: jest.fn((dto) => {
     return { id: 1, ...mockUser, ...dto };
   }),
 };

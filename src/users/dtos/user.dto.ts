@@ -10,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { IUser } from '@users/interfaces/user.interface';
+import { PASSWORD_ERROR, PASSWORD_REGEX } from 'src/users/constants/utils';
 
 export class UserDTO {
   @IsOptional()
@@ -28,20 +29,19 @@ export class UserDTO {
 
   @IsString()
   @MinLength(8)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message:
-      'Password must contain at least 1 upper case latter, 1 lower case and 1 number or special character',
+  @Matches(PASSWORD_REGEX, {
+    message: PASSWORD_ERROR,
   })
   password: string;
 
   @IsEnum(Role)
   role: Role;
 
-  constructor(user?: IUser) {
-    this.firstname = user?.firstname ?? '';
-    this.lastname = user?.lastname ?? '';
-    this.email = user?.email ?? '';
-    this.password = user?.password ?? '';
-    this.role = user?.role ?? Role.USER;
+  constructor(user: IUser) {
+    this.firstname = user.firstname;
+    this.lastname = user.lastname;
+    this.email = user.email;
+    this.password = user.password;
+    this.role = user.role ?? Role.USER;
   }
 }

@@ -73,7 +73,7 @@ describe('UsersService', () => {
     });
 
     it('should not create a user when the repository throws an error', () => {
-      mockRepository.createUser.mockImplementationOnce(() => {
+      mockRepository.saveDTO.mockImplementationOnce(() => {
         throw new Error();
       });
       expect(service.create({ ...mockAdminDTO })).rejects.toThrow(Error);

@@ -28,7 +28,7 @@ export class UsersService {
 
   async create(createUserDto: UserDTO): Promise<User> {
     createUserDto.password = this.hashPassword(createUserDto.password);
-    const user = await this.usersRepo.createUser(createUserDto);
+    const user = await this.usersRepo.saveDTO(createUserDto);
     delete user.password;
     return user;
   }
