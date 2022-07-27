@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { IUser } from '@users/interfaces/user.interface';
-import { PASSWORD_ERROR, PASSWORD_REGEX } from 'src/users/constants/utils';
+import { PASSWORD_ERROR, PASSWORD_REGEX } from '@users/constants/utils';
 
 export class UserDTO {
   @IsOptional()
