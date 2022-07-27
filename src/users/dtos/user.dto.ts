@@ -7,11 +7,8 @@ export class UserDTO extends SignUpDTO {
   role: Role;
 
   constructor(user: IUser) {
-    super();
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
-    this.email = user.email;
-    this.password = user.password;
-    this.role = user.role ?? Role.USER;
+    const { role, ...iSignup } = user;
+    super(iSignup);
+    this.role = role ?? Role.USER;
   }
 }

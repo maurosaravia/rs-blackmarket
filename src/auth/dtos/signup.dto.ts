@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { PASSWORD_ERROR, PASSWORD_REGEX } from '@users/constants/utils';
+import { ISignup } from '@auth/interfaces/signup.interface';
 
 export class SignUpDTO {
   @IsOptional()
@@ -30,4 +31,11 @@ export class SignUpDTO {
     message: PASSWORD_ERROR,
   })
   password: string;
+
+  constructor(user: ISignup) {
+    this.firstname = user.firstname;
+    this.lastname = user.lastname;
+    this.email = user.email;
+    this.password = user.password;
+  }
 }
