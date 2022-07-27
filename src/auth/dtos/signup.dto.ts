@@ -7,6 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { PASSWORD_ERROR, PASSWORD_REGEX } from '@users/constants/utils';
 
 export class SignUpDTO {
   @IsOptional()
@@ -25,9 +26,8 @@ export class SignUpDTO {
 
   @IsString()
   @MinLength(8)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message:
-      'Password must contain at least 1 upper case latter, 1 lower case and 1 number or special character',
+  @Matches(PASSWORD_REGEX, {
+    message: PASSWORD_ERROR,
   })
   password: string;
 }

@@ -66,13 +66,14 @@ describe('UsersService', () => {
       expect(service.create(mockAdminDTO)).resolves.toEqual({
         id: expect.any(Number),
         ...mockAdminDTO,
+        password: undefined,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
     });
 
     it('should not create a user when the repository throws an error', () => {
-      mockRepository.createUser.mockImplementationOnce(() => {
+      mockRepository.saveDTO.mockImplementationOnce(() => {
         throw new Error();
       });
       expect(service.create({ ...mockAdminDTO })).rejects.toThrow(Error);
