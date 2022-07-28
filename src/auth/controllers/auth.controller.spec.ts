@@ -21,8 +21,6 @@ describe('AuthController', () => {
   });
 
   it('should signup a user', () => {
-    console.log(mockSignupDTO);
-    console.log(controller.signup(mockSignupDTO));
     expect(controller.signup(mockSignupDTO)).resolves.toEqual({
       id: expect.any(Number),
       ...mockSignupDTO,
