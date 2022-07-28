@@ -1,7 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { mockAdmin, mockRepository, mockUsers } from '@users/mocks/users.mock';
+import {
+  mockAdmin,
+  mockAdminDTO,
+  mockRepository,
+  mockUsers,
+} from '@users/mocks/users.mock';
 import { UsersRepository } from '@users/repositories/users.repository';
 import { UsersService } from '@users/services/users.service';
 
@@ -53,6 +58,25 @@ describe('UsersService', () => {
         throw new Error();
       });
       expect(service.findOne(100)).rejects.toThrow(Error);
+    });
+  });
+
+  describe('create', () => {
+    it('should create a user when the dto is valid', () => {
+      expect(service.create(mockAdminDTO)).resolves.toEqual({
+        id: expect.any(Number),
+        ...mockAdminDTO,
+        password: undefined,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+
+    it('should not create a user when the repository throws an error', () => {
+      mockRepository.saveDTO.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(service.create({ ...mockAdminDTO })).rejects.toThrow(Error);
     });
   });
 });
