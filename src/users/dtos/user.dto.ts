@@ -1,47 +1,14 @@
 import { Role } from '@users/entities/role.enum';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEnum } from 'class-validator';
+import { SignUpDTO } from '@auth/dtos/signup.dto';
 import { IUser } from '@users/interfaces/user.interface';
-import { PASSWORD_ERROR, PASSWORD_REGEX } from '@users/constants/utils';
-
-export class UserDTO {
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  firstname: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  lastname: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(8)
-  @Matches(PASSWORD_REGEX, {
-    message: PASSWORD_ERROR,
-  })
-  password: string;
-
+export class UserDTO extends SignUpDTO {
   @IsEnum(Role)
   role: Role;
 
   constructor(user: IUser) {
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
-    this.email = user.email;
-    this.password = user.password;
-    this.role = user.role ?? Role.USER;
+    const { role, ...iSignup } = user;
+    super(iSignup);
+    this.role = role ?? Role.USER;
   }
 }

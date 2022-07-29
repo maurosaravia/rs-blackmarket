@@ -76,7 +76,7 @@ describe('UsersService', () => {
       mockRepository.saveDTO.mockImplementationOnce(() => {
         throw new Error();
       });
-      expect(service.create({ ...mockAdminDTO })).rejects.toThrow(Error);
+      expect(service.create(mockAdminDTO)).rejects.toThrow(Error);
     });
   });
 });
